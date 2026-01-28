@@ -1,0 +1,79 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "配置明日方舟",
+                "description": "请输入您的森空岛 Token。\n\n获取方法：\n1. 打开森空岛 App\n2. 进入设置 → 账号管理\n3. 复制 Token 或使用抓包工具获取",
+                "data": {
+                    "token": "Token"
+                }
+            },
+            "select_character": {
+                "title": "选择角色",
+                "description": "检测到您绑定了多个角色，请选择要添加的角色。",
+                "data": {
+                    "character": "角色"
+                }
+            }
+        },
+        "error": {
+            "auth_failed": "认证失败，请检查 Token 是否正确",
+            "no_characters": "未找到绑定的明日方舟角色",
+            "unknown": "发生未知错误"
+        },
+        "abort": {
+            "already_configured": "该角色已配置"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "选项",
+                "data": {
+                    "scan_interval": "更新间隔（分钟）"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "sanity": {
+                "name": "理智"
+            },
+            "sanity_max": {
+                "name": "最大理智"
+            },
+            "sanity_recovery_time": {
+                "name": "理智恢复时间"
+            },
+            "sanity_minutes_to_full": {
+                "name": "理智恢复剩余"
+            },
+            "level": {
+                "name": "等级"
+            },
+            "char_count": {
+                "name": "干员数量"
+            },
+            "sanity_status": {
+                "name": "理智状态",
+                "state": {
+                    "full": "已满",
+                    "not_full": "未满"
+                }
+            }
+        }
+    },
+    "services": {
+        "sign": {
+            "name": "签到",
+            "description": "执行明日方舟森空岛签到",
+            "fields": {
+                "entry_id": {
+                    "name": "配置条目 ID",
+                    "description": "要签到的角色配置条目 ID（可选，留空则对所有角色签到）"
+                }
+            }
+        }
+    }
+}

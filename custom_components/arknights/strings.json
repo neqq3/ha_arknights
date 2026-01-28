@@ -1,0 +1,39 @@
+{
+    "title": "Arknights",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configure Arknights",
+                "description": "Please enter your Skland Token.\n\nHow to get:\n1. Open Skland App\n2. Go to Settings → Account Management\n3. Copy the Token",
+                "data": {
+                    "token": "Token"
+                }
+            },
+            "select_character": {
+                "title": "Select Character",
+                "description": "Multiple characters detected. Please select a character to add.",
+                "data": {
+                    "character": "Character"
+                }
+            }
+        },
+        "error": {
+            "auth_failed": "Authentication failed. Please check your Token.",
+            "no_characters": "No Arknights characters found",
+            "unknown": "Unknown error occurred"
+        },
+        "abort": {
+            "already_configured": "This character is already configured"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Options",
+                "data": {
+                    "scan_interval": "Update interval (minutes)"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "domain": "arknights",
+  "name": "Arknights (明日方舟)",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/your-username/ha-arknights",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/your-username/ha-arknights/issues",
+  "requirements": ["httpx>=0.24.0"],
+  "version": "0.1.0"
+}

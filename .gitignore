@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+scripts/
+analysis_repo/
+.DS_Store
+.idea/
+.vscode/
