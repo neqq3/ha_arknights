@@ -206,6 +206,7 @@ class SklandClient:
         data = await self._request("get", url)
 
         player_data = data["data"]
+        _LOGGER.debug("Raw player data: %s", player_data)
         status = player_data["status"]
         ap = status["ap"]
         secretary = status.get("secretary", {})

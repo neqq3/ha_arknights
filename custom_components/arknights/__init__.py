@@ -129,6 +129,13 @@ async def _async_setup_services(hass: HomeAssistant) -> None:
 
             result = await coordinator.async_sign(channel_master_id)
             _LOGGER.info("签到结果 [%s]: %s", coordinator.nickname, result["message"])
+            
+            # 发送持久化通知
+            hass.components.persistent_notification.async_create(
+                f"角色: {coordinator.nickname}\n结果: {result['message']}",
+                title="明日方舟签到结果",
+                notification_id=f"arknights_sign_{eid}"
+            )
 
     # 只注册一次服务
     if not hass.services.has_service(DOMAIN, "sign"):

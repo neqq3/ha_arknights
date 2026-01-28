@@ -6,7 +6,7 @@ MIT License
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 import math
 
 
@@ -54,7 +54,7 @@ class SanityInfo:
         """理智完全恢复时间。"""
         if self.complete_recovery_time <= 0:
             return None
-        return datetime.fromtimestamp(self.complete_recovery_time)
+        return datetime.fromtimestamp(self.complete_recovery_time, tz=timezone.utc)
 
     @property
     def minutes_to_full(self) -> int:
