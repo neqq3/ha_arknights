@@ -27,7 +27,7 @@ CONF_CHANNEL_MASTER_ID = "channel_master_id"
 SANITY_RECOVERY_RATE = 360  # 秒
 
 # 平台
-PLATFORMS = ["sensor", "binary_sensor"]
+PLATFORMS = ["sensor"]
 
 # User-Agent
 USER_AGENT = "Skland/1.32.1 (com.hypergryph.skland; build:103201004; Android 33; ) Okhttp/4.11.0"

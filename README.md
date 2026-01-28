@@ -51,7 +51,29 @@
 | `sensor.arknights_sanity_recovery_time` | 传感器 | 理智完全恢复时间 |
 | `sensor.arknights_sanity_minutes_to_full` | 传感器 | 理智恢复剩余分钟 |
 | `sensor.arknights_level` | 传感器 | 博士等级 |
-| `sensor.arknights_sanity_status` | 传感器 | 理智状态（未满/已满） |
+| `sensor.arknights_sanity_status` | 传感器 | 理智状态（已满/未满） |
+| `sensor.arknights_sanity_max` | 传感器 | 最大理智（默认禁用） |
+| `sensor.arknights_char_count` | 传感器 | 干员数量（默认禁用） |
+
+## 🎮 服务
+
+### arknights.sign
+执行森空岛每日签到。如果不指定 `entry_id`，将对所有配置的角色执行签到。
+
+**参数**：
+- `entry_id` (可选): 配置条目 ID。
+
+**自动化示例**：
+
+```yaml
+automation:
+  - alias: "每日自动签到"
+    trigger:
+      - platform: time
+        at: "08:00:00"
+    action:
+      - service: arknights.sign
+```
 
 ## 📱 自动化示例
 
