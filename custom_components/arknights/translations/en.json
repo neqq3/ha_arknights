@@ -34,5 +34,12 @@
                 }
             }
         }
+    },
+    "entity": {
+        "button": {
+            "sign_in": {
+                "name": "Sign In"
+            }
+        }
     }
 }

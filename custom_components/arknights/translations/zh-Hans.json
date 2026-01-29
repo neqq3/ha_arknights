@@ -92,6 +92,11 @@
             "tired_char_count": {
                 "name": "疲劳干员"
             }
+        },
+        "button": {
+            "sign_in": {
+                "name": "签到"
+            }
         }
     },
     "services": {
