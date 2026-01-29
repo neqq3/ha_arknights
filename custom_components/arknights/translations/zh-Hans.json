@@ -61,6 +61,27 @@
                     "full": "已满",
                     "not_full": "未满"
                 }
+            },
+            "trading_stock": {
+                "name": "贸易站库存"
+            },
+            "manufacture_complete": {
+                "name": "制造站产出"
+            },
+            "drone": {
+                "name": "无人机"
+            },
+            "training_state": {
+                "name": "训练室状态"
+            },
+            "training_remaining": {
+                "name": "训练剩余时间"
+            },
+            "hire_refresh_count": {
+                "name": "公招刷新次数"
+            },
+            "recruit_finished": {
+                "name": "公招完成数"
             }
         }
     },

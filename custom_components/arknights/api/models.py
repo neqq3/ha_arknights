@@ -97,6 +97,8 @@ class PlayerStatus:
     """家具数量"""
     skin_count: int
     """皮肤数量"""
+    building: "BuildingInfo | None" = None
+    """基建信息"""
 
     @property
     def register_date(self) -> str:
@@ -132,3 +134,87 @@ class BindingCharacter:
     """是否官服"""
     is_default: bool
     """是否默认角色"""
+
+
+@dataclass
+class BuildingInfo:
+    """基建信息。"""
+
+    # 贸易站
+    trading_stock: int = 0
+    """贸易站当前库存订单数"""
+    trading_stock_limit: int = 0
+    """贸易站库存上限"""
+
+    # 制造站
+    manufacture_complete: int = 0
+    """制造站已完成数量"""
+    manufacture_capacity: int = 0
+    """制造站总产能"""
+
+    # 无人机
+    drone_current: int = 0
+    """当前无人机数量"""
+    drone_max: int = 0
+    """最大无人机数量"""
+
+    # 训练室
+    training_state: str = "空闲"
+    """训练室状态"""
+    training_remaining_secs: int = 0
+    """训练剩余秒数"""
+    trainee_char_id: str = ""
+    """正在训练的干员 ID"""
+
+    # 公招
+    hire_refresh_count: int = 0
+    """公招可刷新次数"""
+    hire_complete_time: int = 0
+    """公招刷新恢复时间戳"""
+
+    # 公招槽位
+    recruit_finished: int = 0
+    """已完成的公招数量"""
+    recruit_total: int = 0
+    """公招槽位总数"""
+
+    # 宿舍/休息
+    resting_count: int = 0
+    """正在休息的干员数量"""
+    rested_count: int = 0
+    """已休息完成的干员数量"""
+
+    # 线索
+    clue_own: int = 0
+    """自有线索数量"""
+    clue_received: int = 0
+    """收到的线索数量"""
+    clue_board: list = None  # type: ignore
+    """线索板状态 (7个位置)"""
+
+    # 干员疲劳
+    tired_count: int = 0
+    """疲劳干员数量"""
+
+    def __post_init__(self):
+        if self.clue_board is None:
+            self.clue_board = []
+
+    @property
+    def training_remaining_minutes(self) -> int:
+        """训练剩余分钟数。"""
+        return max(0, int(self.training_remaining_secs / 60))
+
+    @property
+    def hire_refresh_remaining_minutes(self) -> int:
+        """公招刷新恢复剩余分钟。"""
+        if self.hire_refresh_count >= 3:
+            return 0
+        remaining = self.hire_complete_time - datetime.now().timestamp()
+        return max(0, int(remaining / 60))
+
+    @property
+    def clue_collected(self) -> int:
+        """已收集的线索数量（7个中的几个）。"""
+        return len([c for c in self.clue_board if c])
+

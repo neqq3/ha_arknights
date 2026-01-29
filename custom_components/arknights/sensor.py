@@ -72,6 +72,56 @@ SENSOR_DESCRIPTIONS = [
         icon="mdi:alert-circle",
         translation_key="sanity_status",
     ),
+    # 基建传感器
+    SensorEntityDescription(
+        key="trading_stock",
+        name="贸易站库存",
+        icon="mdi:package-variant",
+        native_unit_of_measurement="单",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="manufacture_complete",
+        name="制造站产出",
+        icon="mdi:factory",
+        native_unit_of_measurement="个",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="drone",
+        name="无人机",
+        icon="mdi:quadcopter",
+        native_unit_of_measurement="架",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="training_state",
+        name="训练室状态",
+        icon="mdi:arm-flex",
+        translation_key="training_state",
+    ),
+    SensorEntityDescription(
+        key="training_remaining",
+        name="训练剩余时间",
+        icon="mdi:timer",
+        native_unit_of_measurement="分钟",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default=False,
+    ),
+    SensorEntityDescription(
+        key="hire_refresh_count",
+        name="公招刷新次数",
+        icon="mdi:refresh",
+        native_unit_of_measurement="次",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="recruit_finished",
+        name="公招完成数",
+        icon="mdi:account-check",
+        native_unit_of_measurement="个",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
 ]
 
 
@@ -148,6 +198,21 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
             if data.sanity.current_now >= data.sanity.max:
                 return "full"
             return "not_full"
+        # 基建传感器
+        elif key == "trading_stock":
+            return data.building.trading_stock if data.building else 0
+        elif key == "manufacture_complete":
+            return data.building.manufacture_complete if data.building else 0
+        elif key == "drone":
+            return data.building.drone_current if data.building else 0
+        elif key == "training_state":
+            return data.building.training_state if data.building else "空闲"
+        elif key == "training_remaining":
+            return data.building.training_remaining_minutes if data.building else 0
+        elif key == "hire_refresh_count":
+            return data.building.hire_refresh_count if data.building else 0
+        elif key == "recruit_finished":
+            return data.building.recruit_finished if data.building else 0
 
         return None
 
@@ -180,6 +245,35 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
             return {
                 "sanity": data.sanity.current_now,
                 "max_sanity": data.sanity.max,
+            }
+        # 基建传感器额外属性
+        elif key == "trading_stock" and data.building:
+            return {
+                "current": data.building.trading_stock,
+                "limit": data.building.trading_stock_limit,
+                "percentage": round(data.building.trading_stock / max(data.building.trading_stock_limit, 1) * 100, 1),
+            }
+        elif key == "manufacture_complete" and data.building:
+            return {
+                "current": data.building.manufacture_complete,
+                "capacity": data.building.manufacture_capacity,
+                "percentage": round(data.building.manufacture_complete / max(data.building.manufacture_capacity, 1) * 100, 1),
+            }
+        elif key == "drone" and data.building:
+            return {
+                "current": data.building.drone_current,
+                "max": data.building.drone_max,
+                "percentage": round(data.building.drone_current / max(data.building.drone_max, 1) * 100, 1),
+            }
+        elif key == "training_state" and data.building:
+            return {
+                "remaining_minutes": data.building.training_remaining_minutes,
+                "trainee_char_id": data.building.trainee_char_id,
+            }
+        elif key == "recruit_finished" and data.building:
+            return {
+                "finished": data.building.recruit_finished,
+                "total": data.building.recruit_total,
             }
 
         return None

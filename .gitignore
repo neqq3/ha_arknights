@@ -5,3 +5,4 @@ analysis_repo/
 .DS_Store
 .idea/
 .vscode/
+.secrets/

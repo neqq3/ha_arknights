@@ -54,6 +54,12 @@
 | `sensor.arknights_sanity_status` | 传感器 | 理智状态（已满/未满） |
 | `sensor.arknights_sanity_max` | 传感器 | 最大理智（默认禁用） |
 | `sensor.arknights_char_count` | 传感器 | 干员数量（默认禁用） |
+| `sensor.arknights_trading_stock` | 传感器 | 贸易站库存 |
+| `sensor.arknights_manufacture_complete` | 传感器 | 制造站产出 |
+| `sensor.arknights_drone` | 传感器 | 无人机数量 |
+| `sensor.arknights_training_state` | 传感器 | 训练室状态 |
+| `sensor.arknights_hire_refresh_count` | 传感器 | 公招刷新次数 |
+| `sensor.arknights_recruit_finished` | 传感器 | 公招完成数 |
 
 ## 🎮 服务
 
@@ -108,6 +114,23 @@ automation:
           entity_id: light.desk_lamp
         data:
           color_name: yellow
+```
+
+### 基建满仓通知
+
+```yaml
+automation:
+  - alias: "基建满仓通知"
+    trigger:
+      - platform: template
+        value_template: >
+          {{ states('sensor.arknights_trading_stock') | int >= 
+             state_attr('sensor.arknights_trading_stock', 'limit') | int }}
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "明日方舟"
+          message: "博士，贸易站满仓了！快来收菜！"
 ```
 
 ## 🙏 致谢

@@ -61,7 +61,9 @@ class ArknightsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._cred_token = cred.token
 
                 # 获取绑定的角色列表
-                client = SklandClient(cred)
+                from homeassistant.helpers.aiohttp_client import async_get_clientsession
+                session = async_get_clientsession(self.hass)
+                client = SklandClient(cred, session)
                 characters = await client.get_binding()
 
                 if not characters:

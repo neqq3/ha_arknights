@@ -19,6 +19,7 @@ import voluptuous as vol
 
 from .const import (
     DOMAIN,
+    CONF_TOKEN,
     CONF_CRED,
     CONF_CRED_TOKEN,
     CONF_UID,
@@ -51,11 +52,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # 创建 API 客户端
-    client = SklandClient(cred)
+    from homeassistant.helpers.aiohttp_client import async_get_clientsession
+    session = async_get_clientsession(hass)
+    client = SklandClient(cred, session)
 
     # 获取更新间隔
     scan_interval = entry.options.get("scan_interval", 10)
     update_interval = timedelta(minutes=scan_interval)
+
+    # 凭证更新回调：将新凭证持久化到 config_entry
+    async def on_credential_update(new_cred: Credential) -> None:
+        """凭证更新时持久化到配置条目。"""
+        new_data = {**entry.data}
+        new_data[CONF_CRED] = new_cred.cred
+        new_data[CONF_CRED_TOKEN] = new_cred.token
+        hass.config_entries.async_update_entry(entry, data=new_data)
+        _LOGGER.info("已将新凭证保存到配置")
 
     # 创建数据协调器
     coordinator = ArknightsDataUpdateCoordinator(
@@ -63,6 +75,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         client,
         uid=entry.data[CONF_UID],
         nickname=entry.data[CONF_NICKNAME],
+        original_token=entry.data[CONF_TOKEN],
+        on_credential_update=on_credential_update,
         update_interval=update_interval,
     )
 
@@ -131,7 +145,9 @@ async def _async_setup_services(hass: HomeAssistant) -> None:
             _LOGGER.info("签到结果 [%s]: %s", coordinator.nickname, result["message"])
             
             # 发送持久化通知
-            hass.components.persistent_notification.async_create(
+            from homeassistant.components import persistent_notification
+            persistent_notification.async_create(
+                hass,
                 f"角色: {coordinator.nickname}\n结果: {result['message']}",
                 title="明日方舟签到结果",
                 notification_id=f"arknights_sign_{eid}"
