@@ -60,6 +60,9 @@
 | `sensor.arknights_training_state` | 传感器 | 训练室状态 |
 | `sensor.arknights_hire_refresh_count` | 传感器 | 公招刷新次数 |
 | `sensor.arknights_recruit_finished` | 传感器 | 公招完成数 |
+| `sensor.arknights_clue_collected` | 传感器 | 线索收集进度 |
+| `sensor.arknights_dormitory_rested` | 传感器 | 宿舍休息人数 |
+| `sensor.arknights_tired_char_count` | 传感器 | 疲劳干员数量 |
 
 ## 🎮 服务
 

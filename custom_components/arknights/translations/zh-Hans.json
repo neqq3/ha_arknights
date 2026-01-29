@@ -82,6 +82,15 @@
             },
             "recruit_finished": {
                 "name": "公招完成数"
+            },
+            "clue_collected": {
+                "name": "线索收集"
+            },
+            "dormitory_rested": {
+                "name": "宿舍休息"
+            },
+            "tired_char_count": {
+                "name": "疲劳干员"
             }
         }
     },

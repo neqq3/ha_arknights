@@ -122,6 +122,27 @@ SENSOR_DESCRIPTIONS = [
         native_unit_of_measurement="个",
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    SensorEntityDescription(
+        key="clue_collected",
+        name="线索收集",
+        icon="mdi:puzzle",
+        native_unit_of_measurement="个",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="dormitory_rested",
+        name="宿舍休息完成",
+        icon="mdi:bed",
+        native_unit_of_measurement="人",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="tired_char_count",
+        name="疲劳干员",
+        icon="mdi:sleep-off",
+        native_unit_of_measurement="人",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
 ]
 
 
@@ -213,6 +234,12 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
             return data.building.hire_refresh_count if data.building else 0
         elif key == "recruit_finished":
             return data.building.recruit_finished if data.building else 0
+        elif key == "clue_collected":
+            return data.building.clue_collected if data.building else 0
+        elif key == "dormitory_rested":
+            return data.building.rested_count if data.building else 0
+        elif key == "tired_char_count":
+            return data.building.tired_count if data.building else 0
 
         return None
 
@@ -274,6 +301,19 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
             return {
                 "finished": data.building.recruit_finished,
                 "total": data.building.recruit_total,
+            }
+        elif key == "clue_collected" and data.building:
+            return {
+                "own": data.building.clue_own,
+                "received": data.building.clue_received,
+                "total": 7,
+                # 哪些线索已拥有
+                "board": [bool(c) for c in data.building.clue_board],
+            }
+        elif key == "dormitory_rested" and data.building:
+            return {
+                "rested": data.building.rested_count,
+                "resting": data.building.resting_count,
             }
 
         return None
