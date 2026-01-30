@@ -29,6 +29,7 @@ from .const import (
 )
 from .api import SklandClient, Credential
 from .coordinator import ArknightsDataUpdateCoordinator
+from .websocket import async_register_websocket_api
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -95,6 +96,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # 注册服务
     await _async_setup_services(hass)
+
+    # 注册 WebSocket API
+    await async_register_websocket_api(hass)
 
     # 监听选项更新
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
