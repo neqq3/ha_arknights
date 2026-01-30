@@ -97,13 +97,85 @@ class PlayerStatus:
     """家具数量"""
     skin_count: int
     """皮肤数量"""
+    medal_count: int = 0
+    """蚀刻章数量"""
     building: "BuildingInfo | None" = None
     """基建信息"""
+    campaign: "CampaignInfo | None" = None
+    """剿灭信息"""
+    routine: "RoutineInfo | None" = None
+    """日/周常任务"""
+    tower: "TowerInfo | None" = None
+    """保全派驻"""
+    assist_chars: list = field(default_factory=list)
+    """助战干员列表"""
 
     @property
     def register_date(self) -> str:
         """注册日期。"""
         return datetime.fromtimestamp(self.register_ts).strftime("%Y-%m-%d")
+
+
+@dataclass
+class CampaignInfo:
+    """剿灭作战信息。"""
+
+    current: int = 0
+    """当前已领取合成玉"""
+    total: int = 1800
+    """本周可领取上限"""
+
+
+@dataclass
+class RoutineInfo:
+    """日/周常任务进度。"""
+
+    daily_current: int = 0
+    """每日任务完成数"""
+    daily_total: int = 0
+    """每日任务总数"""
+    weekly_current: int = 0
+    """每周任务完成数"""
+    weekly_total: int = 0
+    """每周任务总数"""
+
+
+@dataclass
+class TowerInfo:
+    """保全派驻信息。"""
+
+    higher_current: int = 0
+    """数据增补仪当前"""
+    higher_total: int = 0
+    """数据增补仪上限"""
+    lower_current: int = 0
+    """数据增补条当前"""
+    lower_total: int = 0
+    """数据增补条上限"""
+    term_ts: int = 0
+    """刷新时间戳"""
+
+
+@dataclass
+class AssistCharInfo:
+    """助战干员信息。"""
+
+    char_id: str
+    """干员 ID"""
+    skin_id: str
+    """皮肤 ID"""
+    level: int
+    """等级"""
+    evolve_phase: int
+    """精英化阶段"""
+    potential_rank: int
+    """潜能等级"""
+    skill_id: str = ""
+    """选择的技能 ID"""
+    skill_level: int = 0
+    """技能等级"""
+    specialize_level: int = 0
+    """专精等级"""
 
 
 @dataclass

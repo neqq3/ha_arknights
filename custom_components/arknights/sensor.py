@@ -143,6 +143,24 @@ SENSOR_DESCRIPTIONS = [
         native_unit_of_measurement="人",
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    # 剿灭与任务
+    SensorEntityDescription(
+        key="campaign_reward",
+        name="剿灭进度",
+        icon="mdi:skull-crossbones",
+        native_unit_of_measurement="合成玉",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="daily_task",
+        name="日常任务",
+        icon="mdi:calendar-check",
+    ),
+    SensorEntityDescription(
+        key="weekly_task",
+        name="周常任务",
+        icon="mdi:calendar-week",
+    ),
 ]
 
 
@@ -241,8 +259,20 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
         elif key == "tired_char_count":
             return data.building.tired_count if data.building else 0
 
-        return None
+        # 剿灭与任务
+        elif key == "campaign_reward":
+            return data.campaign.current if data.campaign else 0
+        elif key == "daily_task":
+            if data.routine:
+                return f"{data.routine.daily_current}/{data.routine.daily_total}"
+            return "0/0"
+        elif key == "weekly_task":
+            if data.routine:
+                return f"{data.routine.weekly_current}/{data.routine.weekly_total}"
+            return "0/0"
 
+        return None
+    
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
         """额外状态属性。"""
@@ -314,6 +344,25 @@ class ArknightsSensor(CoordinatorEntity[ArknightsDataUpdateCoordinator], SensorE
             return {
                 "rested": data.building.rested_count,
                 "resting": data.building.resting_count,
+            }
+        # 剿灭与任务额外属性
+        elif key == "campaign_reward" and data.campaign:
+            return {
+                "current": data.campaign.current,
+                "total": data.campaign.total,
+                "missing": data.campaign.total - data.campaign.current,
+            }
+        elif key == "daily_task" and data.routine:
+            return {
+                "current": data.routine.daily_current,
+                "total": data.routine.daily_total,
+                "percentage": round(data.routine.daily_current / max(data.routine.daily_total, 1) * 100, 1),
+            }
+        elif key == "weekly_task" and data.routine:
+            return {
+                "current": data.routine.weekly_current,
+                "total": data.routine.weekly_total,
+                "percentage": round(data.routine.weekly_current / max(data.routine.weekly_total, 1) * 100, 1),
             }
 
         return None

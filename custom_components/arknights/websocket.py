@@ -119,6 +119,20 @@ def ws_get_account_data(
 
             # 基建信息（可能为 None）
             if player.building:
+                # 线索板详情：显示1-7哪个有哪个没有
+                clue_map = {
+                    "RHINE": 1,
+                    "PENGUIN": 2,
+                    "BLACKSTEEL": 3,
+                    "URSUS": 4,
+                    "GLASGOW": 5,
+                    "KJERAG": 6,
+                    "RHODES": 7,
+                }
+                clue_board_status = {}
+                for name, slot_id in clue_map.items():
+                    clue_board_status[slot_id] = name in player.building.clue_board
+
                 response["building"] = {
                     "trading_stock": player.building.trading_stock,
                     "trading_stock_limit": player.building.trading_stock_limit,
@@ -137,10 +151,61 @@ def ws_get_account_data(
                     "clue_own": player.building.clue_own,
                     "clue_received": player.building.clue_received,
                     "clue_collected": player.building.clue_collected,
+                    "clue_board": clue_board_status,
                     "tired_count": player.building.tired_count,
                 }
             else:
                 response["building"] = None
+
+            # 蚀刻章
+            response["medal_count"] = player.medal_count
+
+            # 剿灭
+            if player.campaign:
+                response["campaign"] = {
+                    "current": player.campaign.current,
+                    "total": player.campaign.total,
+                }
+            else:
+                response["campaign"] = None
+
+            # 日/周常任务
+            if player.routine:
+                response["routine"] = {
+                    "daily_current": player.routine.daily_current,
+                    "daily_total": player.routine.daily_total,
+                    "weekly_current": player.routine.weekly_current,
+                    "weekly_total": player.routine.weekly_total,
+                }
+            else:
+                response["routine"] = None
+
+            # 保全派驻
+            if player.tower:
+                response["tower"] = {
+                    "higher_current": player.tower.higher_current,
+                    "higher_total": player.tower.higher_total,
+                    "lower_current": player.tower.lower_current,
+                    "lower_total": player.tower.lower_total,
+                    "term_ts": player.tower.term_ts,
+                }
+            else:
+                response["tower"] = None
+
+            # 助战干员
+            response["assist_chars"] = [
+                {
+                    "char_id": ac.char_id,
+                    "skin_id": ac.skin_id,
+                    "level": ac.level,
+                    "evolve_phase": ac.evolve_phase,
+                    "potential_rank": ac.potential_rank,
+                    "skill_id": ac.skill_id,
+                    "skill_level": ac.skill_level,
+                    "specialize_level": ac.specialize_level,
+                }
+                for ac in player.assist_chars
+            ]
 
             connection.send_result(msg["id"], response)
             return

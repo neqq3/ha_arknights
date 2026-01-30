@@ -15,7 +15,18 @@ from urllib.parse import urlparse
 import aiohttp
 
 from ..const import SKLAND_BASE_URL, USER_AGENT
-from .models import Credential, PlayerStatus, SanityInfo, SignResult, BindingCharacter, BuildingInfo
+from .models import (
+    Credential,
+    PlayerStatus,
+    SanityInfo,
+    SignResult,
+    BindingCharacter,
+    BuildingInfo,
+    CampaignInfo,
+    RoutineInfo,
+    TowerInfo,
+    AssistCharInfo,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -239,6 +250,65 @@ class SklandClient:
         # 解析基建数据
         building_info = self._parse_building_data(player_data)
 
+        # 解析蚀刻章
+        medal = player_data.get("medal", {})
+        medal_count = medal.get("total", 0)
+
+        # 解析剿灭
+        campaign_data = player_data.get("campaign", {})
+        campaign_info = None
+        if campaign_data:
+            reward = campaign_data.get("reward", {})
+            campaign_info = CampaignInfo(
+                current=reward.get("current", 0),
+                total=reward.get("total", 1800),
+            )
+
+        # 解析日/周常任务
+        routine_data = player_data.get("routine", {})
+        routine_info = None
+        if routine_data:
+            daily = routine_data.get("daily", {})
+            weekly = routine_data.get("weekly", {})
+            routine_info = RoutineInfo(
+                daily_current=daily.get("current", 0),
+                daily_total=daily.get("total", 0),
+                weekly_current=weekly.get("current", 0),
+                weekly_total=weekly.get("total", 0),
+            )
+
+        # 解析保全派驻
+        tower_data = player_data.get("tower", {})
+        tower_info = None
+        if tower_data:
+            reward = tower_data.get("reward", {})
+            higher = reward.get("higherItem", {})
+            lower = reward.get("lowerItem", {})
+            tower_info = TowerInfo(
+                higher_current=higher.get("current", 0),
+                higher_total=higher.get("total", 0),
+                lower_current=lower.get("current", 0),
+                lower_total=lower.get("total", 0),
+                term_ts=reward.get("termTs", 0),
+            )
+
+        # 解析助战干员
+        assist_chars_data = player_data.get("assistChars", [])
+        assist_chars = []
+        for ac in assist_chars_data:
+            char_info = ac.get("charInfo", {}) if ac else {}
+            skill_info = ac.get("currentSkill", {}) if ac else {}
+            assist_chars.append(AssistCharInfo(
+                char_id=char_info.get("charId", ""),
+                skin_id=char_info.get("skinId", ""),
+                level=char_info.get("level", 0),
+                evolve_phase=char_info.get("evolvePhase", 0),
+                potential_rank=char_info.get("potentialRank", 0),
+                skill_id=skill_info.get("skillId", ""),
+                skill_level=skill_info.get("level", 0),
+                specialize_level=skill_info.get("specializeLevel", 0),
+            ))
+
         return PlayerStatus(
             uid=status["uid"],
             name=status["name"],
@@ -259,7 +329,12 @@ class SklandClient:
             char_count=char_count,
             furniture_count=status.get("furnitureCnt", 0),
             skin_count=status.get("skinCnt", 0),
+            medal_count=medal_count,
             building=building_info,
+            campaign=campaign_info,
+            routine=routine_info,
+            tower=tower_info,
+            assist_chars=assist_chars,
         )
 
     async def sign(self, uid: str, channel_master_id: str) -> SignResult:
